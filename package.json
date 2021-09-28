@@ -1,6 +1,6 @@
 {
   "name": "providence-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "local proxy server, writting response into dataset, and allowing to replay a dataset.",
   "main": "src/index.js",
   "author": "Guillaume Lamanda <guillaume.lamanda@gmail.com>",
