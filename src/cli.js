@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import { program, Command } from "commander";
-import { resolve, join, dirname } from "path";
+import { join, dirname, resolve } from "path";
 import { renameSync, readdirSync, existsSync, readFileSync } from "fs";
 import startServer from "./server.js";
-import { baseFolder as currentSnifferDirectory } from "./sniffer.js";
+import { getBaseFolder } from "./sniffer.js";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -14,7 +14,6 @@ const { version } = JSON.parse(
 );
 
 const defaultPort = "3000";
-const datasetFolder = `${__dirname}/data`;
 
 const isFolderEmpty = (folder) => {
   if (!existsSync(folder)) return true;
@@ -23,8 +22,8 @@ const isFolderEmpty = (folder) => {
   ).length;
 };
 
-const getDataset = () =>
-  readdirSync(datasetFolder, {
+const getDataset = ({ dataFolder }) =>
+  readdirSync(resolve(join(dataFolder, "data")), {
     withFileTypes: true,
   })
     .filter((file) => file.isDirectory())
@@ -33,24 +32,28 @@ const getDataset = () =>
 program
   .version(version)
   .option("-p, --port", "port", defaultPort)
-  .requiredOption("-h, --proxy-host <host>", "proxy host")
+  .option("-h, --proxy-host <host>", "proxy host")
+  .option("-d, --data-folder <folder>", "folder used to write responses")
   .option("-v, --verbose", "verbose mode")
-  .action(({ port, replay, verbose, proxyHost }) => {
+  .action(({ port, replay, verbose, proxyHost, dataFolder: destFolder }) => {
     startServer({
       port,
       USE_LOGS: verbose,
       REPLAY: replay,
       proxyHost,
+      destFolder,
     });
   })
   .addCommand(
     new Command("save")
       .option("-n, --name <name>", "backup name")
-      .action(({ name }) => {
+      .option("-d, --data-folder <folder>", "folder used to write responses")
+      .action(({ name, dataFolder: snifferDestFolder }) => {
+        const currentSnifferDirectory = getBaseFolder(snifferDestFolder);
         if (isFolderEmpty(currentSnifferDirectory)) {
           throw new Error("no data to save. Please use sniffer mode to record");
         }
-        const targetDirectory = join(resolve(__dirname), "data", name);
+        const targetDirectory = join(currentSnifferDirectory, "..", name);
         renameSync(currentSnifferDirectory, targetDirectory);
       })
   )
@@ -67,10 +70,13 @@ program
       })
   )
   .addCommand(
-    new Command("ls").action(() => {
-      console.log("My dataset");
-      getDataset();
-    })
+    new Command("ls")
+      .alias("list")
+      .option("-d, --data-folder <folder>", "folder used to write responses")
+      .action(({ dataFolder, ...rest }) => {
+        console.log("My dataset", rest, dataFolder);
+        getDataset({ dataFolder });
+      })
   );
 
 program.parse(process.argv);

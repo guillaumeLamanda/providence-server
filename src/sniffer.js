@@ -2,9 +2,14 @@ import { mkdirSync, existsSync, createWriteStream, writeFileSync } from "fs";
 import { dirname, join, resolve } from "path";
 import { fileURLToPath } from "url";
 
-export const baseFolder = resolve(
-  join(dirname(fileURLToPath(import.meta.url)), "..", "data", "current")
-);
+export const getBaseFolder = (destinationFolder) =>
+  resolve(
+    join(
+      destinationFolder ?? join(dirname(fileURLToPath(import.meta.url)), ".."),
+      "data",
+      "current"
+    )
+  );
 
 const ensurePath = (path) =>
   path.split("/").forEach((folder, index, array) => {
@@ -15,7 +20,8 @@ const ensurePath = (path) =>
     }
   });
 
-const sniffer = (url, response) => {
+const sniffer = (destinationFolder, url, response) => {
+  const baseFolder = getBaseFolder(destinationFolder);
   try {
     ensurePath(baseFolder);
     const dataFile = join(baseFolder, url, `data.json`);

@@ -4,7 +4,13 @@ import logger from "morgan";
 import getReplayRouter from "./replay.js";
 import proxyFactory from "./proxy.js";
 
-function start({ port = "3000", proxyHost, REPLAY = false, USE_LOGS = false }) {
+function start({
+  port = "3000",
+  proxyHost,
+  REPLAY = false,
+  USE_LOGS = false,
+  destFolder,
+}) {
   const app = express();
 
   /** REQUEST LOGS */
@@ -45,7 +51,7 @@ function start({ port = "3000", proxyHost, REPLAY = false, USE_LOGS = false }) {
    * @param {string} path
    * @param {import('express').RequestHandler} handler
    */
-  const proxy = proxyFactory(proxyHost);
+  const proxy = proxyFactory({ proxyHost, destFolder });
   app.use("*", (req, res) => {
     proxy(req, res);
   });
