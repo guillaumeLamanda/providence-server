@@ -10,6 +10,9 @@
 
 > local proxy server, writing response into dataset, and allowing to replay a dataset.
 
+This is a local proxy server. It record the responses, and store it into files.
+You can also replay stored responses. It can be useful if you're experiencing down times, or for integration testing.
+
 ## Install
 
 ```sh
@@ -18,8 +21,47 @@ yarn install providence-server
 
 ## Usage
 
+You can see all options available by using `--help` option.
+
 ```sh
 providence --help
+```
+
+To use the server, you have to specify the proxy host to call :
+
+```sh
+providence -h my-awesome-server.fr
+```
+
+By default, datas will be stored into providence node_modules folder,
+but if you want to store responses in a specific folder, you can use the `--data-folder` option :
+
+```sh
+providence -h my-awesome-server.fr -d ./data
+```
+
+To replay the current dataset, you can use the `replay` command:
+
+```sh
+providence replay
+# or if you have a specific data folder
+providence replay -d ./data
+```
+
+To save a dataset, use the `save` command:
+
+```sh
+providence save -n my-dataset-name
+# or if you have a specific data folder
+providence save -d ./data -n my-dataset-name
+```
+
+To list your datasets, use le `list` (or `ls`) command:
+
+```sh
+providence list
+# or if you have a specific data folder
+providence list -d ./data
 ```
 
 ## Author
@@ -27,6 +69,8 @@ providence --help
 👤 **Guillaume Lamanda <guillaume.lamanda@gmail.com>**
 
 - Github: [@guillaumeLamanda](https://github.com/guillaumeLamanda)
+
+This project was created while I was working for [Aumaxpourmoi](https://www.aumaxpourmoi.fr/).
 
 ## Show your support
 
