@@ -12,7 +12,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "dependencies": {
     "commander": "8.2.0",
@@ -26,7 +27,9 @@
     "@babel/eslint-parser": "7.15.7",
     "babel-eslint": "^10.1.0",
     "eslint": "7.32.0",
-    "jest": "27.2.3"
+    "eslint-plugin-jest": "24.5.0",
+    "jest": "27.2.4",
+    "supertest": "6.1.6"
   },
   "volta": {
     "node": "14.17.6"
