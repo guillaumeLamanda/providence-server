@@ -3,6 +3,8 @@ import { createServer } from "http";
 import logger from "morgan";
 import getReplayRouter from "./replay.js";
 import proxyFactory from "./proxy.js";
+import { join } from "path";
+import { currentFolderName } from "./sniffer.js";
 
 function start({
   port = "3000",
@@ -24,21 +26,16 @@ function start({
   });
 
   /** PROXY */
+  const datasetName = process.env["dataset-name"] ?? currentFolderName;
   const getReplayFolder = () => {
-    if (typeof REPLAY === "string") {
-      return REPLAY;
-    }
-    if (typeof REPLAY === "boolean" && !REPLAY) {
-      return REPLAY;
-    }
-    return "current";
+    return join(process.env["data-folder"], datasetName);
   };
-  const replayFolder = getReplayFolder();
+  const replayFolderPath = getReplayFolder();
 
   if (REPLAY) {
     app.use(
       getReplayRouter({
-        replayFolder,
+        replayFolderPath,
       })
     );
   }
@@ -89,7 +86,7 @@ function start({
       hostname: "localhost",
       port: addr.port,
       proxy: proxyHost,
-      replay: replayFolder || REPLAY,
+      replay: datasetName || REPLAY,
     });
   });
 

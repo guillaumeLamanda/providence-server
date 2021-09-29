@@ -1,30 +1,18 @@
-import { mkdirSync, existsSync, createWriteStream, writeFileSync } from "fs";
-import { dirname, join, resolve } from "path";
-import { fileURLToPath } from "url";
+import { createWriteStream, writeFileSync } from "fs";
+import { join } from "path";
+import { ensurePath } from "./utils/index.js";
 
-export const getBaseFolder = (destinationFolder) =>
-  resolve(
-    join(
-      destinationFolder ?? join(dirname(fileURLToPath(import.meta.url)), ".."),
-      "data",
-      "current"
-    )
-  );
+export const currentFolderName = "current";
 
-const ensurePath = (path) =>
-  path.split("/").forEach((folder, index, array) => {
-    if (index === array.length) return;
-    const subPath = resolve(array.slice(0, index).join("/"));
-    if (!existsSync(subPath)) {
-      mkdirSync(subPath);
-    }
-  });
-
-const sniffer = (destinationFolder, url, response) => {
-  const baseFolder = getBaseFolder(destinationFolder);
+export const sniffer = (destinationFolder, url, response) => {
   try {
-    ensurePath(baseFolder);
-    const dataFile = join(baseFolder, url, `data.json`);
+    ensurePath(destinationFolder);
+    const responseDestinationFolder = join(
+      destinationFolder,
+      currentFolderName,
+      url
+    );
+    const dataFile = join(responseDestinationFolder, `data.json`);
     ensurePath(dataFile);
     console.log(`[sniffer] writing ${dataFile}`);
     const writeStream = createWriteStream(dataFile);
@@ -32,9 +20,9 @@ const sniffer = (destinationFolder, url, response) => {
       writeStream.write(chunk);
     });
     response.on("end", () => {
-      const statusFilePath = join(baseFolder, url, `statusCode.txt`);
+      const statusFilePath = join(responseDestinationFolder, `statusCode.txt`);
       writeFileSync(statusFilePath, response.statusCode.toString());
-      const headersFilePath = join(baseFolder, url, `headers.json`);
+      const headersFilePath = join(responseDestinationFolder, `headers.json`);
       writeFileSync(headersFilePath, JSON.stringify(response.headers, null, 2));
       writeStream.close();
     });
@@ -43,6 +31,3 @@ const sniffer = (destinationFolder, url, response) => {
     console.error(error);
   }
 };
-
-const _sniffer = sniffer;
-export { _sniffer as sniffer };

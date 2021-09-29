@@ -3,28 +3,17 @@
  * @see proxy.js
  */
 import { Router } from "express";
-import { resolve, join, dirname } from "path";
+import { join } from "path";
 import { existsSync, readFileSync } from "fs";
-import { fileURLToPath } from "url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const getReplayRouter = ({ replayFolder = "current" }) => {
+const getReplayRouter = ({ replayFolderPath }) => {
   const router = Router();
-  const baseDataPath = resolve(
-    join(
-      __dirname,
-      replayFolder === "current" ? ".." : ".",
-      "data",
-      replayFolder
-    )
-  );
 
-  if (!existsSync(baseDataPath)) {
-    throw new Error(`replay folder "${replayFolder}" does not exist`);
+  if (!existsSync(replayFolderPath)) {
+    throw new Error(`replay folder "${replayFolderPath}" does not exist`);
   }
   router.use("*", ({ originalUrl, baseUrl }, res, next) => {
-    const dataPath = join(baseDataPath, `${baseUrl}`);
+    const dataPath = join(replayFolderPath, `${baseUrl}`);
 
     if (existsSync(dataPath)) {
       console.log(`[replay] ${originalUrl}`);
