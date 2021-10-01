@@ -87,6 +87,7 @@ program
   .action(({ port, replay, verbose, proxyHost, dataFolder }) => {
     if (!proxyHost)
       throw new Error("proxy host is required (option --proxy-host)");
+    process.env["data-folder"] = getDataFolderPath(dataFolder);
     startServer({
       port,
       USE_LOGS: verbose,
