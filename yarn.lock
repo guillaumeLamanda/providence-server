@@ -1196,7 +1196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-eslint@npm:^10.1.0":
+"babel-eslint@npm:10.1.0":
   version: 10.1.0
   resolution: "babel-eslint@npm:10.1.0"
   dependencies:
@@ -4285,7 +4285,7 @@ fsevents@^2.3.2:
   resolution: "providence-server@workspace:."
   dependencies:
     "@babel/eslint-parser": 7.15.7
-    babel-eslint: ^10.1.0
+    babel-eslint: 10.1.0
     commander: 8.2.0
     eslint: 7.32.0
     eslint-plugin-jest: 24.5.0
