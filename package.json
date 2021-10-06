@@ -24,7 +24,7 @@
     "node-fetch": "3.0.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "7.15.7",
+    "@babel/eslint-parser": "7.15.8",
     "babel-eslint": "10.1.0",
     "eslint": "7.32.0",
     "eslint-plugin-jest": "24.5.2",
