@@ -21,7 +21,7 @@ const isFolderEmpty = (folder) => {
 };
 
 const getDataset = ({ dataFolderPath }) =>
-  readdirSync(resolve(join(dataFolderPath)), {
+  readdirSync(resolve(dataFolderPath), {
     withFileTypes: true,
   })
     .filter((file) => file.isDirectory())
@@ -30,7 +30,7 @@ const getDataset = ({ dataFolderPath }) =>
 const dataFolderOption = new Option(
   "-d, --data-folder <folder>",
   "folder used to write responses"
-).default(join(getDirname(import.meta.url), "../data"));
+).default(getDefaultDataFolderPath());
 
 const saveCommand = new Command("save")
   .description("save the current dataset into a the folder <name>")
@@ -53,8 +53,12 @@ const saveCommand = new Command("save")
 const replayCommand = new Command("replay")
   .description("replay a dataset")
   .option("-n, --name <name>", "Dataset to replay", "current")
+  .addOption(dataFolderOption)
   .option("-p, --port", "port", defaultPort)
   .action(({ port, name }) => {
+    if (!process.env["data-folder"]) {
+      process.env["data-folder"] = getDefaultDataFolderPath();
+    }
     process.env["dataset-name"] = name;
     startServer({
       port,
@@ -67,7 +71,10 @@ const listCommand = new Command("ls")
   .description("list all datasets")
   .action(() => {
     const dataFolder = process.env["data-folder"];
-    const dataFolderPath = getDataFolderPath(dataFolder);
+
+    const dataFolderPath = getDataFolderPath(
+      dataFolder || getDefaultDataFolderPath()
+    );
     if (!existsSync(dataFolderPath))
       throw new Error(`data folder ${dataFolderPath} does not exist`);
     console.log("My dataset");
@@ -75,14 +82,16 @@ const listCommand = new Command("ls")
   })
   .alias("list");
 
+const setDataFolderInEnvVariables = (dataFolder) => {
+  process.env["data-folder"] = getDataFolderPath(dataFolder);
+};
+
 program
   .version(version)
   .option("-p, --port", "port", defaultPort)
   .option("-h, --proxy-host <host>", "proxy host")
   .addOption(dataFolderOption)
-  .on("option:data-folder", (dataFolder) => {
-    process.env["data-folder"] = getDataFolderPath(dataFolder);
-  })
+  .on("option:data-folder", setDataFolderInEnvVariables)
   .option("-v, --verbose", "verbose mode")
   .action(({ port, replay, verbose, proxyHost, dataFolder }) => {
     if (!proxyHost)
@@ -101,3 +110,6 @@ program
   .addCommand(listCommand);
 
 program.parse(process.argv);
+function getDefaultDataFolderPath() {
+  return join(getDirname(import.meta.url), "../data");
+}
