@@ -46,7 +46,7 @@ const saveCommand = new Command("save")
         `no data to save in folder "${currentSnifferDirectory}". Please use sniffer mode to record`
       );
     }
-    const targetDirectory = join(currentSnifferDirectory, name);
+    const targetDirectory = join(snifferDestFolder, name);
     renameSync(currentSnifferDirectory, targetDirectory);
   });
 
