@@ -64,6 +64,11 @@ providence list
 providence list -d ./data
 ```
 
+## Contributing
+
+Contributions, issues and feature requests are welcome!
+Feel free to check [issues](https://github.com/guillaumeLamanda/providence-server/issues) page. You can also take a look at the [contributing guide](./CONTRIBUTING.md).
+
 ## Author
 
 👤 **Guillaume Lamanda <guillaume.lamanda@gmail.com>**
