@@ -30,14 +30,14 @@ providence --help
 To use the server, you have to specify the proxy host to call :
 
 ```sh
-providence -h my-awesome-server.fr
+providence proxy -h my-awesome-server.fr
 ```
 
 By default, datas will be stored into providence node_modules folder,
 but if you want to store responses in a specific folder, you can use the `--data-folder` option :
 
 ```sh
-providence -h my-awesome-server.fr -d ./data
+providence  proxy-h my-awesome-server.fr -d ./data
 ```
 
 To replay the current dataset, you can use the `replay` command:

@@ -86,7 +86,8 @@ function start({
       hostname: "localhost",
       port: addr.port,
       proxy: proxyHost,
-      replay: datasetName || REPLAY,
+      "data-folder": process.env["data-folder"],
+      replay: REPLAY && datasetName,
     });
   });
 

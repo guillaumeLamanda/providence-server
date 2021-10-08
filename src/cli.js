@@ -27,14 +27,27 @@ const getDataset = ({ dataFolderPath }) =>
     .filter((file) => file.isDirectory())
     .map(({ name }) => console.log(` - ${name}`));
 
+const setDataFolderInEnvVariables = (dataFolder) => {
+  process.env["data-folder"] = getDataFolderPath(dataFolder);
+};
+
 const dataFolderOption = new Option(
   "-d, --data-folder <folder>",
   "folder used to write responses"
 ).default(getDefaultDataFolderPath());
 
+const portOption = new Option("-p, --port", "port").default(defaultPort);
+
+const datasetNameOption = new Option(
+  "-n, --name <name>",
+  "Dataset name"
+).default("current");
+
 const saveCommand = new Command("save")
   .description("save the current dataset into a the folder <name>")
   .requiredOption("-n, --name <name>", "backup name")
+  .addOption(dataFolderOption)
+  .on("option:data-folder", setDataFolderInEnvVariables)
   .action(({ name }) => {
     const snifferDestFolder = process.env["data-folder"];
     const currentSnifferDirectory = join(
@@ -52,14 +65,15 @@ const saveCommand = new Command("save")
 
 const replayCommand = new Command("replay")
   .description("replay a dataset")
-  .option("-n, --name <name>", "Dataset to replay", "current")
+  .addOption(datasetNameOption)
   .addOption(dataFolderOption)
-  .option("-p, --port", "port", defaultPort)
+  .addOption(portOption)
+  .on("option:data-folder", setDataFolderInEnvVariables)
   .action(({ port, name }) => {
-    if (!process.env["data-folder"]) {
-      process.env["data-folder"] = getDefaultDataFolderPath();
-    }
+    console.log({ name });
+
     process.env["dataset-name"] = name;
+
     startServer({
       port,
       REPLAY: true,
@@ -69,6 +83,8 @@ const replayCommand = new Command("replay")
 
 const listCommand = new Command("ls")
   .description("list all datasets")
+  .addOption(dataFolderOption)
+  .on("option:data-folder", setDataFolderInEnvVariables)
   .action(() => {
     const dataFolder = process.env["data-folder"];
 
@@ -82,32 +98,36 @@ const listCommand = new Command("ls")
   })
   .alias("list");
 
-const setDataFolderInEnvVariables = (dataFolder) => {
-  process.env["data-folder"] = getDataFolderPath(dataFolder);
+const proxyCommand = new Command("proxy")
+  .option("-p, --port", "port", defaultPort)
+  .requiredOption("-h, --host <host>", "proxy host")
+  .addOption(dataFolderOption)
+  .on("option:data-folder", setDataFolderInEnvVariables)
+  .option("-v, --verbose", "verbose mode")
+  .action(({ port, verbose, host, dataFolder }) => {
+    startServer({
+      port,
+      USE_LOGS: verbose,
+      REPLAY: false,
+      proxyHost: host,
+      destFolder: getDataFolderPath(dataFolder),
+    });
+  });
+
+const ensureDataFolderOnCommand = (command) => {
+  if (!command.getOptionValue("data-folder")) {
+    command.setOptionValue("data-folder", getDefaultDataFolderPath());
+    process.env["data-folder"] = getDefaultDataFolderPath();
+  }
+  return command;
 };
 
 program
   .version(version)
-  .option("-p, --port", "port", defaultPort)
-  .option("-h, --proxy-host <host>", "proxy host")
-  .addOption(dataFolderOption)
-  .on("option:data-folder", setDataFolderInEnvVariables)
-  .option("-v, --verbose", "verbose mode")
-  .action(({ port, replay, verbose, proxyHost, dataFolder }) => {
-    if (!proxyHost)
-      throw new Error("proxy host is required (option --proxy-host)");
-    process.env["data-folder"] = getDataFolderPath(dataFolder);
-    startServer({
-      port,
-      USE_LOGS: verbose,
-      REPLAY: replay,
-      proxyHost,
-      destFolder: getDataFolderPath(dataFolder),
-    });
-  })
-  .addCommand(saveCommand)
-  .addCommand(replayCommand)
-  .addCommand(listCommand);
+  .addCommand(ensureDataFolderOnCommand(proxyCommand))
+  .addCommand(ensureDataFolderOnCommand(saveCommand))
+  .addCommand(ensureDataFolderOnCommand(replayCommand))
+  .addCommand(ensureDataFolderOnCommand(listCommand));
 
 program.parse(process.argv);
 function getDefaultDataFolderPath() {
