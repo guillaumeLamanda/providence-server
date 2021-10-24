@@ -6,11 +6,12 @@ extends: 'eslint:recommended'
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
-parser: babel-eslint
+parser: "@babel/eslint-parser"
 parserOptions:
   ecmaVersion: 2018
   sourceType: module
   extends: standard
+  requireConfigFile: false
 plugins:
   - "jest"
 rules: {}
