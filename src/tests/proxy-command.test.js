@@ -7,27 +7,56 @@ import { getDirname } from "../utils/index.js";
 
 describe("proxy", () => {
   let process;
-  beforeAll(async () => {
-    process = spawn(resolve(`src/cli.js`), [
-      "proxy",
-      "-h",
-      testApiUrl,
-      "-d",
-      dataFolder,
-    ]);
-    await new Promise((resolve) => {
-      process.stdout.on("data", (message) => {
-        if (
-          /Starting server with following configuration/.test(
-            message.toString()
-          )
-        ) {
-          resolve();
-        }
-      });
+
+  describe("with data folder", () => {
+    const dataFolder = resolve(join(getDirname(import.meta.url), "data"));
+
+    beforeAll(async () => {
+      process = await startWithArgs("-d", dataFolder);
+    });
+
+    testDataWriting(dataFolder);
+
+    afterAll(() => {
+      process.kill("SIGHUP");
+      exec(`rm -rf ${dataFolder}`);
     });
   });
 
+  describe("without data folder option", () => {
+    beforeAll(async () => {
+      process = await startWithArgs();
+    });
+
+    testDataWriting();
+
+    afterAll(() => {
+      process.kill("SIGHUP");
+      exec(`rm -rf data/current`);
+    });
+  });
+});
+
+const startWithArgs = async (...args) => {
+  const process = spawn(resolve(`src/cli.js`), [
+    "proxy",
+    "-h",
+    testApiUrl,
+    ...args,
+  ]);
+  await new Promise((resolve) => {
+    process.stdout.on("data", (message) => {
+      if (
+        /Starting server with following configuration/.test(message.toString())
+      ) {
+        resolve();
+      }
+    });
+  });
+  return process;
+};
+
+function testDataWriting(dataFolder = "data") {
   describe("when the server receive a request", () => {
     beforeAll(async () => {
       await supertest("http://localhost:3000").get("/api/random");
@@ -51,11 +80,4 @@ describe("proxy", () => {
       ).toBeTruthy();
     });
   });
-
-  afterAll(() => {
-    process.kill("SIGHUP");
-    exec(`rm -rf ${dataFolder}`);
-  });
-});
-
-const dataFolder = resolve(join(getDirname(import.meta.url), "data"));
+}
