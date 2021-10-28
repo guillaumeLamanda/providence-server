@@ -14,7 +14,7 @@
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
     "prepare": "husky install",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --runInBand"
   },
   "dependencies": {
     "commander": "8.3.0",
