@@ -1,30 +1,26 @@
-import { exec, spawn } from "child_process";
+import { exec } from "child_process";
 import { readFileSync } from "fs";
 import { join, resolve } from "path";
 import supertest from "supertest";
 import testApiUrl from "./test-api-url";
 import { getDirname } from "../utils/index.js";
+import { createProxyUtil, createReplayUtil } from "./cli.utils";
 
 describe("replay", () => {
-  let process;
+  const replay = createReplayUtil();
 
   describe("with data folder", () => {
     const dataFolder = resolve(join(getDirname(import.meta.url), "data"));
 
     beforeAll(async () => {
-      process = await startWithArgs(
-        "proxy",
-        "-h",
-        testApiUrl,
-        "-d",
-        dataFolder
-      );
+      const proxy = createProxyUtil();
+      await proxy.start("-h", testApiUrl, "-d", dataFolder);
       await supertest("http://localhost:3000").get("/api/random");
       // wait for the server to write file
       await new Promise((resolve) => setTimeout(resolve, 100));
+      proxy.stop();
 
-      process.kill("SIGHUP");
-      process = await startWithArgs("replay", "-d", dataFolder);
+      await replay.start("-d", dataFolder);
     });
 
     it("should replay the written file", async () => {
@@ -38,7 +34,7 @@ describe("replay", () => {
     });
 
     afterAll(() => {
-      process.kill("SIGHUP");
+      replay.stop();
       exec(`rm -rf ${dataFolder}`);
     });
   });
@@ -46,12 +42,14 @@ describe("replay", () => {
   describe("without data folder", () => {
     const dataFolder = resolve("data");
     beforeAll(async () => {
-      process = await startWithArgs("proxy", "-h", testApiUrl);
+      const proxy = createProxyUtil();
+      await proxy.start("-h", testApiUrl);
       await supertest("http://localhost:3000").get("/api/random");
       // wait for the server to write file
       await new Promise((resolve) => setTimeout(resolve, 100));
-      process.kill("SIGHUP");
-      process = await startWithArgs("replay");
+      proxy.stop();
+
+      await replay.start();
     });
 
     it("should replay the written file", async () => {
@@ -66,26 +64,8 @@ describe("replay", () => {
     });
 
     afterAll(() => {
-      process.kill("SIGHUP");
+      replay.stop();
       exec(`rm -rf ${dataFolder}`);
     });
   });
 });
-
-const startWithArgs = async (...args) => {
-  const process = spawn(resolve(`src/cli.js`), args);
-  await new Promise((resolve, reject) => {
-    process.stdout.on("data", (message) => {
-      if (
-        /Starting server with following configuration/.test(message.toString())
-      ) {
-        resolve();
-      }
-    });
-    process.stdout.on("error", console.error);
-    process.on("error", (error) => {
-      reject(error);
-    });
-  });
-  return process;
-};
