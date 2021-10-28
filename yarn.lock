@@ -1030,6 +1030,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jest@npm:27.0.2":
+  version: 27.0.2
+  resolution: "@types/jest@npm:27.0.2"
+  dependencies:
+    jest-diff: ^27.0.0
+    pretty-format: ^27.0.0
+  checksum: 814ad5f5d2f277849f47e52906da4b745758e555630fc8cb46a071bde648eefeffb1b35710c530a8cea7fc4ea7c1d813812c120484bf7902ab6c5e473cdd49c9
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:^7.0.7":
   version: 7.0.9
   resolution: "@types/json-schema@npm:7.0.9"
@@ -3805,7 +3815,7 @@ fsevents@^2.3.2:
   languageName: node
   linkType: hard
 
-"jest-diff@npm:^27.3.1":
+"jest-diff@npm:^27.0.0, jest-diff@npm:^27.3.1":
   version: 27.3.1
   resolution: "jest-diff@npm:27.3.1"
   dependencies:
@@ -5341,7 +5351,7 @@ fsevents@^2.3.2:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^27.3.1":
+"pretty-format@npm:^27.0.0, pretty-format@npm:^27.3.1":
   version: 27.3.1
   resolution: "pretty-format@npm:27.3.1"
   dependencies:
@@ -5401,6 +5411,7 @@ fsevents@^2.3.2:
     "@babel/eslint-parser": 7.15.8
     "@commitlint/cli": 13.2.1
     "@commitlint/config-conventional": 13.2.0
+    "@types/jest": 27.0.2
     commander: 8.3.0
     conventional-changelog-cli: 2.1.1
     eslint: 8.1.0
