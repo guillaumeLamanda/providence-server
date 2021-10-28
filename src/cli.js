@@ -70,8 +70,6 @@ const replayCommand = new Command("replay")
   .addOption(portOption)
   .on("option:data-folder", setDataFolderInEnvVariables)
   .action(({ port, name }) => {
-    console.log({ name });
-
     process.env["dataset-name"] = name;
 
     startServer({
