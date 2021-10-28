@@ -1,60 +1,42 @@
-import { exec, spawn } from "child_process";
+import { exec } from "child_process";
 import { existsSync } from "fs";
 import { join, resolve } from "path";
 import supertest from "supertest";
-import testApiUrl from "./test-api-url";
 import { getDirname } from "../utils/index.js";
+import testApiUrl from "./test-api-url";
+import { createProxyUtil } from "./cli.utils";
 
 describe("proxy", () => {
-  let process;
+  const proxy = createProxyUtil();
 
   describe("with data folder", () => {
     const dataFolder = resolve(join(getDirname(import.meta.url), "data"));
 
     beforeAll(async () => {
-      process = await startWithArgs("-d", dataFolder);
+      await proxy.start("-d", dataFolder, "-h", testApiUrl);
     });
 
     testDataWriting(dataFolder);
 
     afterAll(() => {
-      process.kill("SIGHUP");
+      proxy.stop();
       exec(`rm -rf ${dataFolder}`);
     });
   });
 
   describe("without data folder option", () => {
     beforeAll(async () => {
-      process = await startWithArgs();
+      await proxy.start("-h", testApiUrl);
     });
 
     testDataWriting();
 
     afterAll(() => {
-      process.kill("SIGHUP");
+      proxy.stop();
       exec(`rm -rf data/current`);
     });
   });
 });
-
-const startWithArgs = async (...args) => {
-  const process = spawn(resolve(`src/cli.js`), [
-    "proxy",
-    "-h",
-    testApiUrl,
-    ...args,
-  ]);
-  await new Promise((resolve) => {
-    process.stdout.on("data", (message) => {
-      if (
-        /Starting server with following configuration/.test(message.toString())
-      ) {
-        resolve();
-      }
-    });
-  });
-  return process;
-};
 
 function testDataWriting(dataFolder = "data") {
   describe("when the server receive a request", () => {
