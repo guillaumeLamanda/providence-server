@@ -15,6 +15,8 @@ You can also replay stored responses. It can be useful if you're experiencing do
 
 ## Install
 
+> Node.js 14.18.1 or later
+
 ```sh
 yarn add providence-server
 ```
