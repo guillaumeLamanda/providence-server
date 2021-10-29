@@ -16,7 +16,7 @@ You can also replay stored responses. It can be useful if you're experiencing do
 ## Install
 
 ```sh
-yarn install providence-server
+yarn add providence-server
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ By default, datas will be stored into providence node_modules folder,
 but if you want to store responses in a specific folder, you can use the `--data-folder` option :
 
 ```sh
-providence  proxy-h my-awesome-server.fr -d ./data
+providence  proxy -h my-awesome-server.fr -d ./data
 ```
 
 To replay the current dataset, you can use the `replay` command:
