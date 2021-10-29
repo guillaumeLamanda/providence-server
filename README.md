@@ -18,6 +18,10 @@ You can also replay stored responses. It can be useful if you're experiencing do
 ```sh
 yarn add providence-server
 ```
+Or :
+```sh
+npx providence-server
+```
 
 ## Usage
 
