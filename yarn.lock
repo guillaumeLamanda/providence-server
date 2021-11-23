@@ -2559,9 +2559,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:25.2.4":
-  version: 25.2.4
-  resolution: "eslint-plugin-jest@npm:25.2.4"
+"eslint-plugin-jest@npm:25.3.0":
+  version: 25.3.0
+  resolution: "eslint-plugin-jest@npm:25.3.0"
   dependencies:
     "@typescript-eslint/experimental-utils": ^5.0.0
   peerDependencies:
@@ -2572,7 +2572,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: d263c5564e5ce573759fa06b94011855780e79b0407888a5ac0e80303af2aa249d9d089bcd2f0fc108eb58ef6f367544217b1be2b561216e92fc830e9a924a63
+  checksum: d801c166f528392fbb0234e34b893e97c24a7be049744f2d23b1702bce6202d5f0760886a591f884ffa82c7e01a2b06134e86da991bfa568ca5a90311e5f452e
   languageName: node
   linkType: hard
 
@@ -5470,7 +5470,7 @@ fsevents@^2.3.2:
     commander: 8.3.0
     conventional-changelog-cli: 2.1.1
     eslint: 8.3.0
-    eslint-plugin-jest: 25.2.4
+    eslint-plugin-jest: 25.3.0
     express: 4.17.1
     faker: 5.5.3
     husky: 7.0.4
