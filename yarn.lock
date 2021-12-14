@@ -44,9 +44,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/eslint-parser@npm:7.16.3":
-  version: 7.16.3
-  resolution: "@babel/eslint-parser@npm:7.16.3"
+"@babel/eslint-parser@npm:7.16.5":
+  version: 7.16.5
+  resolution: "@babel/eslint-parser@npm:7.16.5"
   dependencies:
     eslint-scope: ^5.1.1
     eslint-visitor-keys: ^2.1.0
@@ -54,7 +54,7 @@ __metadata:
   peerDependencies:
     "@babel/core": ">=7.11.0"
     eslint: ^7.5.0 || ^8.0.0
-  checksum: 3678ea3be1b94dd17516b84b84998f043e8e1a6c5690c572e850011736e224bc62a96d4a96be9e38556e2dfe7914962af5edfd205fdc8b846794a232c81f94a8
+  checksum: 7d4fe169b371bdce3caab64d6434f251c661cef86e01e320f4e2f81bed159d1f366138e18abb7386d40032cd4972fce723ec9af8b9895d5559fa7caff52efbab
   languageName: node
   linkType: hard
 
@@ -5504,7 +5504,7 @@ fsevents@^2.3.2:
   version: 0.0.0-use.local
   resolution: "providence-server@workspace:."
   dependencies:
-    "@babel/eslint-parser": 7.16.3
+    "@babel/eslint-parser": 7.16.5
     "@commitlint/cli": 15.0.0
     "@commitlint/config-conventional": 15.0.0
     "@types/jest": 27.0.3
