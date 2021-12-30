@@ -28,7 +28,7 @@
     "@babel/eslint-parser": "7.16.5",
     "@commitlint/cli": "15.0.0",
     "@commitlint/config-conventional": "15.0.0",
-    "@types/jest": "27.0.3",
+    "@types/jest": "27.4.0",
     "conventional-changelog-cli": "2.2.2",
     "eslint": "8.5.0",
     "eslint-plugin-jest": "25.3.2",
