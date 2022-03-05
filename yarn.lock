@@ -4828,9 +4828,9 @@ fsevents@^2.3.2:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:12.3.4":
-  version: 12.3.4
-  resolution: "lint-staged@npm:12.3.4"
+"lint-staged@npm:12.3.5":
+  version: 12.3.5
+  resolution: "lint-staged@npm:12.3.5"
   dependencies:
     cli-truncate: ^3.1.0
     colorette: ^2.0.16
@@ -4847,7 +4847,7 @@ fsevents@^2.3.2:
     yaml: ^1.10.2
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 4e0b4b9da4183a0daeab35d41e4d243fb1270a39db997efa0c3745fa148a7a4b8b723a51cb757595fc8bb118796ca1465e67aede72f25e9ea48165aec36cec3b
+  checksum: 6653c7078b36741e521e5f309b56bb75db198a05cbdd188124ff82a290e352ade3eb1e6080265729e19711ac08d190e300874af00e4e540b57b3c8f0690e2573
   languageName: node
   linkType: hard
 
@@ -5865,7 +5865,7 @@ fsevents@^2.3.2:
     faker: 5.5.3
     husky: 7.0.4
     jest: 27.5.1
-    lint-staged: 12.3.4
+    lint-staged: 12.3.5
     lodash.omit: 4.5.0
     morgan: 1.10.0
     node-fetch: 3.2.1
